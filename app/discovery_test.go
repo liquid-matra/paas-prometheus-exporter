@@ -5,18 +5,18 @@ import (
 	"errors"
 	"time"
 
-	"github.com/alphagov/paas-prometheus-exporter/test"
 	sonde_events "github.com/cloudfoundry/sonde-go/events"
+	"github.com/liquid-matra/paas-prometheus-exporter/test"
 
 	dto "github.com/prometheus/client_model/go"
 
-	"github.com/alphagov/paas-prometheus-exporter/app"
-	"github.com/alphagov/paas-prometheus-exporter/cf/mocks"
-	. "github.com/onsi/ginkgo"
+	"github.com/liquid-matra/paas-prometheus-exporter/app"
+	"github.com/liquid-matra/paas-prometheus-exporter/cf/mocks"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/cloudfoundry-community/go-cfclient"
+	"github.com/cloudfoundry-community/go-cfclient/v2"
 )
 
 const guid = "33333333-3333-3333-3333-333333333333"

@@ -1,6 +1,7 @@
 package cf
 
 import (
+	lcClient "code.cloudfoundry.org/go-log-cache/v3"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,9 +10,8 @@ import (
 
 	"golang.org/x/oauth2"
 
-	logcache "code.cloudfoundry.org/log-cache/pkg/client"
-	cfclient "github.com/cloudfoundry-community/go-cfclient"
-	"github.com/cloudfoundry/noaa/consumer"
+	cfclient "github.com/cloudfoundry-community/go-cfclient/v2"
+	"github.com/cloudfoundry/noaa/v2/consumer"
 )
 
 type ServiceInstance struct {
@@ -28,7 +28,7 @@ type Client interface {
 	GetToken() (token string, authError error)
 	consumer.TokenRefresher
 	DopplerEndpoint() string
-	NewLogCacheClient() LogCacheClient
+	NewLogCacheClient() *lcClient.Client
 }
 
 type client struct {
@@ -175,9 +175,9 @@ func (c *client) DopplerEndpoint() string {
 	return c.cfClient.Endpoint.DopplerEndpoint
 }
 
-func (c *client) NewLogCacheClient() LogCacheClient {
-	return logcache.NewClient(c.logCacheEndpoint,
-		logcache.WithHTTPClient(&logCacheHTTPClient{
+func (c *client) NewLogCacheClient() *lcClient.Client {
+	return lcClient.NewClient(c.logCacheEndpoint,
+		lcClient.WithHTTPClient(&logCacheHTTPClient{
 			tokenSource: c.cfClient.Config.TokenSource,
 			client:      http.DefaultClient,
 		}),

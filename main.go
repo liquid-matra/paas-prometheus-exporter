@@ -2,7 +2,12 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
+	"github.com/liquid-matra/paas-prometheus-exporter/app"
+	"github.com/liquid-matra/paas-prometheus-exporter/cf"
+	"github.com/liquid-matra/paas-prometheus-exporter/service"
+	"github.com/liquid-matra/paas-prometheus-exporter/util"
 	"log"
 	"net/http"
 	"os"
@@ -13,31 +18,38 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/alphagov/paas-prometheus-exporter/app"
-	"github.com/alphagov/paas-prometheus-exporter/cf"
-	"github.com/alphagov/paas-prometheus-exporter/service"
-	"github.com/alphagov/paas-prometheus-exporter/util"
-
-	"github.com/cloudfoundry-community/go-cfclient"
+	"github.com/cloudfoundry-community/go-cfclient/v2"
 	cfenv "github.com/cloudfoundry-community/go-cfenv"
 	"github.com/prometheus/client_golang/prometheus"
-	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
-	version            = "0.0.5"
-	apiEndpoint        = kingpin.Flag("api-endpoint", "API endpoint").Required().OverrideDefaultFromEnvar("API_ENDPOINT").String()
-	logCacheEndpoint   = kingpin.Flag("logcache-endpoint", "LogCache endpoint").Default("").OverrideDefaultFromEnvar("LOGCACHE_ENDPOINT").String()
-	username           = kingpin.Flag("username", "UAA username.").Default("").OverrideDefaultFromEnvar("USERNAME").String()
-	password           = kingpin.Flag("password", "UAA password.").Default("").OverrideDefaultFromEnvar("PASSWORD").String()
-	clientID           = kingpin.Flag("client-id", "UAA client ID.").Default("").OverrideDefaultFromEnvar("CLIENT_ID").String()
-	clientSecret       = kingpin.Flag("client-secret", "UAA client secret.").Default("").OverrideDefaultFromEnvar("CLIENT_SECRET").String()
-	updateFrequency    = kingpin.Flag("update-frequency", "The time in seconds, that takes between each apps update call.").Default("300").OverrideDefaultFromEnvar("UPDATE_FREQUENCY").Int64()
-	scrapeInterval     = kingpin.Flag("scrape-interval", "The time in seconds, that takes between Prometheus scrapes.").Default("60").OverrideDefaultFromEnvar("SCRAPE_INTERVAL").Int64()
-	prometheusBindPort = kingpin.Flag("prometheus-bind-port", "The port to bind to for prometheus metrics.").Default("8080").OverrideDefaultFromEnvar("PORT").Int()
-	authUsername       = kingpin.Flag("auth-username", "HTTP basic auth username; leave blank to disable basic auth").Default("").OverrideDefaultFromEnvar("AUTH_USERNAME").String()
-	authPassword       = kingpin.Flag("auth-password", "HTTP basic auth password").Default("").OverrideDefaultFromEnvar("AUTH_PASSWORD").String()
+	apiEndpoint        string
+	logCacheEndpoint   string
+	username           string
+	password           string
+	clientID           string
+	clientSecret       string
+	updateFrequency    int64
+	scrapeInterval     int64
+	prometheusBindPort int
+	authUsername       string
+	authPassword       string
 )
+
+func loadEnvironmentVariables() {
+	flag.StringVar(&apiEndpoint, "api-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "API endpoint")
+	flag.StringVar(&logCacheEndpoint, "logcache-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "LogCache endpoint")
+	flag.StringVar(&username, "username", LookupEnvOrString("USERNAME", ""), "Cloud Foundry username")
+	flag.StringVar(&username, "password", LookupEnvOrString("PASSWORD", ""), "Cloud Foundry password")
+	flag.StringVar(&username, "client-id", LookupEnvOrString("CLIENT_ID", ""), "uaa Client ID")
+	flag.StringVar(&username, "client-secret", LookupEnvOrString("CLIENT_SECRET", ""), "uaa Client ID")
+	flag.Int64Var(&updateFrequency, "update-frequency", 300, "The time in seconds, that takes between each apps update call")
+	flag.Int64Var(&scrapeInterval, "scrape-interval", 60, "The time in seconds, that takes between Prometheus scrapes")
+	flag.IntVar(&prometheusBindPort, "prometheus-bind-port", 60, "tThe port to bind to for prometheus metrics")
+	flag.StringVar(&username, "auth-username", LookupEnvOrString("AUTH_USERNAME", ""), "HTTP basic auth username; leave blank to disable basic auth")
+	flag.StringVar(&username, "auth-password", LookupEnvOrString("AUTH_PASSWORD", ""), "HTTP basic auth password")
+}
 
 type ServiceDiscovery interface {
 	Start()
@@ -56,21 +68,11 @@ func main() {
 		cancel()
 	}()
 
-	kingpin.Parse()
+	loadEnvironmentVariables()
+	flag.Parse()
+	CheckConfig()
 
-	if *logCacheEndpoint == "" {
-		*logCacheEndpoint = strings.Replace(*apiEndpoint, "api.", "log-cache.", 1)
-	}
-
-	if *updateFrequency < 60 {
-		log.Fatal("The update frequency can not be less than 1 minute")
-	}
-
-	if *scrapeInterval < 60 {
-		log.Fatal("The scrape interval can not be less than 1 minute")
-	}
-
-	build_info := prometheus.NewGauge(
+	buildInfo := prometheus.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "paas_exporter_build_info",
 			Help: "PaaS Prometheus exporter build info.",
@@ -79,8 +81,8 @@ func main() {
 			},
 		},
 	)
-	build_info.Set(1)
-	prometheus.DefaultRegisterer.MustRegister(build_info)
+	buildInfo.Set(1)
+	prometheus.DefaultRegisterer.MustRegister(buildInfo)
 
 	vcapplication, err := cfenv.Current()
 	if err != nil {
@@ -102,14 +104,14 @@ func main() {
 	)
 
 	config := &cfclient.Config{
-		ApiAddress:   *apiEndpoint,
-		Username:     *username,
-		Password:     *password,
-		ClientID:     *clientID,
-		ClientSecret: *clientSecret,
+		ApiAddress:   apiEndpoint,
+		Username:     username,
+		Password:     password,
+		ClientID:     clientID,
+		ClientSecret: clientSecret,
 		UserAgent:    userAgent,
 	}
-	client, err := cf.NewClient(config, *logCacheEndpoint)
+	client, err := cf.NewClient(config, logCacheEndpoint)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -119,7 +121,7 @@ func main() {
 	appDiscovery := app.NewDiscovery(
 		client,
 		prometheus.DefaultRegisterer,
-		time.Duration(*updateFrequency)*time.Second,
+		time.Duration(updateFrequency)*time.Second,
 	)
 
 	appDiscovery.Start(ctx, errChan)
@@ -127,13 +129,13 @@ func main() {
 	serviceDiscovery := service.NewDiscovery(
 		client,
 		prometheus.DefaultRegisterer,
-		time.Duration(*updateFrequency)*time.Second,
-		time.Duration(*scrapeInterval)*time.Second,
+		time.Duration(updateFrequency)*time.Second,
+		time.Duration(scrapeInterval)*time.Second,
 	)
 
 	serviceDiscovery.Start(ctx, errChan)
 
-	server := buildHTTPServer(*prometheusBindPort, promhttp.Handler(), *authUsername, *authPassword)
+	server := buildHTTPServer(prometheusBindPort, promhttp.Handler(), authUsername, authPassword)
 
 	go func() {
 		err := server.ListenAndServe()
@@ -181,4 +183,46 @@ func buildHTTPServer(port int, promHandler http.Handler, authUsername, authPassw
 	}
 
 	return server
+}
+
+func LookupEnvOrString(key string, defaultVal string) string {
+	if val, ok := os.LookupEnv(key); ok {
+		return val
+	}
+	return defaultVal
+}
+
+func CheckConfig() {
+	var missingVariable []string
+	if username == "" {
+		missingVariable = append(missingVariable, "USERNAME")
+	}
+	if password == "" {
+		missingVariable = append(missingVariable, "PASSWORD")
+	}
+	if clientID == "" {
+		missingVariable = append(missingVariable, "CLIENT_ID")
+	}
+	if clientSecret == "" {
+		missingVariable = append(missingVariable, "CLIENT_SECRET")
+	}
+
+	if logCacheEndpoint == "" {
+		logCacheEndpoint = strings.Replace(apiEndpoint, "api.", "log-cache.", 1)
+	}
+
+	if updateFrequency < 60 {
+		log.Fatal("The update frequency can not be less than 1 minute")
+		os.Exit(1)
+	}
+
+	if scrapeInterval < 60 {
+		log.Fatal("The scrape interval can not be less than 1 minute")
+		os.Exit(1)
+	}
+
+	if len(missingVariable) > 0 {
+		log.Fatal("Missing mandatory environment variables:", missingVariable)
+		os.Exit(1)
+	}
 }

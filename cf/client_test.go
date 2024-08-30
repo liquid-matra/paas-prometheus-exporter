@@ -1,10 +1,9 @@
 package cf_test
 
 import (
-	"github.com/alphagov/paas-prometheus-exporter/cf"
-	"github.com/cloudfoundry-community/go-cfclient"
 	"github.com/jarcoal/httpmock"
-	. "github.com/onsi/ginkgo"
+	"github.com/liquid-matra/paas-prometheus-exporter/cf"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 

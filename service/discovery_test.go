@@ -5,17 +5,17 @@ import (
 	"errors"
 	"time"
 
-	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
-	"github.com/alphagov/paas-prometheus-exporter/cf"
-	"github.com/alphagov/paas-prometheus-exporter/test"
+	"code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2"
+	"github.com/liquid-matra/paas-prometheus-exporter/cf"
+	"github.com/liquid-matra/paas-prometheus-exporter/test"
 
-	cfmocks "github.com/alphagov/paas-prometheus-exporter/cf/mocks"
-	"github.com/alphagov/paas-prometheus-exporter/service"
-	cfclient "github.com/cloudfoundry-community/go-cfclient"
+	cfclient "github.com/cloudfoundry-community/go-cfclient/v2"
+	cfmocks "github.com/liquid-matra/paas-prometheus-exporter/cf/mocks"
+	"github.com/liquid-matra/paas-prometheus-exporter/service"
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
@@ -214,7 +214,7 @@ var _ = Describe("Service discovery", func() {
 
 		discovery.Start(ctx, errChan)
 
-		Eventually(fakeClient.NewLogCacheClientCallCount, 10 * time.Second).Should(Equal(2))
+		Eventually(fakeClient.NewLogCacheClientCallCount, 10*time.Second).Should(Equal(2))
 
 		Eventually(func() *dto.Metric {
 			return test.FindMetric(registry, map[string]string{

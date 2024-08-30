@@ -18,7 +18,7 @@ applications:
 
   env:
     TZ: Europe/Zurich
-    GOPACKAGENAME: github.com/alphagov/paas-prometheus-exporter
+    GOPACKAGENAME: github.com/liquid-matra/paas-prometheus-exporter
     API_ENDPOINT: https://api.lyra-836.appcloud.swisscom.com
     USERNAME: ((cf_username))
     PASSWORD: ((cf_password))

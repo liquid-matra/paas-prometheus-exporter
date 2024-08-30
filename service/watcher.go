@@ -1,15 +1,16 @@
 package service
 
 import (
-	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
+	lcClient "code.cloudfoundry.org/go-log-cache/v3"
+	"code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2"
 	"context"
 	"fmt"
 	"log"
 	"time"
 
-	"github.com/alphagov/paas-prometheus-exporter/util"
+	"github.com/liquid-matra/paas-prometheus-exporter/util"
 
-	"github.com/alphagov/paas-prometheus-exporter/cf"
+	"github.com/liquid-matra/paas-prometheus-exporter/cf"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -38,7 +39,7 @@ func (m *timestampedCollector) Collect(out chan<- prometheus.Metric) {
 }
 
 type Watcher struct {
-	logcacheClient     cf.LogCacheClient
+	logcacheClient     lcClient.Client
 	service            cf.ServiceInstance
 	registerer         prometheus.Registerer
 	cancel             context.CancelFunc
@@ -49,7 +50,7 @@ type Watcher struct {
 func NewWatcher(
 	service cf.ServiceInstance,
 	registerer prometheus.Registerer,
-	logcacheClient cf.LogCacheClient,
+	logcacheClient lcClient.Client,
 	checkInterval time.Duration,
 ) *Watcher {
 	serviceRegisterer := prometheus.WrapRegistererWith(
@@ -104,7 +105,7 @@ func (w *Watcher) mainLoop(ctx context.Context) error {
 }
 
 func (w *Watcher) processLogCacheEvents(ctx context.Context) error {
-	envelopes, err := readLogsWithRetry(w.logcacheClient, ctx, w.service.Guid, time.Now().Add(-15*time.Minute), 3, 1 * time.Second)
+	envelopes, err := readLogsWithRetry(w.logcacheClient, ctx, w.service.Guid, time.Now().Add(-15*time.Minute), 3, 1*time.Second)
 	if err != nil {
 		return fmt.Errorf("failed to read the log-cache logs for service %s after all retries: %s", w.service.Guid, err)
 	}
@@ -157,7 +158,7 @@ func (w *Watcher) Close() {
 }
 
 func readLogsWithRetry(
-	client cf.LogCacheClient,
+	client lcClient.Client,
 	ctx context.Context,
 	serviceGuid string,
 	start time.Time,

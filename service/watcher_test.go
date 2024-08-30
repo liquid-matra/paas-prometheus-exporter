@@ -5,16 +5,16 @@ import (
 	"errors"
 	"time"
 
-	"github.com/alphagov/paas-prometheus-exporter/test"
+	"github.com/liquid-matra/paas-prometheus-exporter/test"
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
 
-	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
-	"github.com/alphagov/paas-prometheus-exporter/cf"
-	cfmocks "github.com/alphagov/paas-prometheus-exporter/cf/mocks"
-	"github.com/alphagov/paas-prometheus-exporter/service"
-	cfclient "github.com/cloudfoundry-community/go-cfclient"
-	. "github.com/onsi/ginkgo"
+	"code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2"
+	cfclient "github.com/cloudfoundry-community/go-cfclient/v2"
+	"github.com/liquid-matra/paas-prometheus-exporter/cf"
+	cfmocks "github.com/liquid-matra/paas-prometheus-exporter/cf/mocks"
+	"github.com/liquid-matra/paas-prometheus-exporter/service"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"
 )

@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
-	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
-	logcache "code.cloudfoundry.org/log-cache/pkg/client"
-	"github.com/alphagov/paas-prometheus-exporter/cf"
+	logcache "code.cloudfoundry.org/go-log-cache/v3"
+	"code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2"
+	"github.com/liquid-matra/paas-prometheus-exporter/cf"
 )
 
 type FakeLogCacheClient struct {

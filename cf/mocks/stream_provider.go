@@ -4,8 +4,8 @@ package mocks
 import (
 	"sync"
 
-	"github.com/alphagov/paas-prometheus-exporter/cf"
 	sonde_events "github.com/cloudfoundry/sonde-go/events"
+	"github.com/liquid-matra/paas-prometheus-exporter/cf"
 )
 
 type FakeAppStreamProvider struct {

@@ -7,8 +7,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/alphagov/paas-prometheus-exporter/cf"
+	"github.com/liquid-matra/paas-prometheus-exporter/cf"
 	"github.com/prometheus/client_golang/prometheus"
+
+	lcClient "code.cloudfoundry.org/go-log-cache/v3"
 )
 
 type serviceMetadata struct {
@@ -111,9 +113,9 @@ func (s *Discovery) createNewWatcher(ctx context.Context, service cf.ServiceInst
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	logCacheClient := s.client.NewLogCacheClient()
-
-	watcher := NewWatcher(service, s.prometheusRegisterer, logCacheClient, s.watcherInterval)
+	// matra: logCacheClient := s.client.NewLogCacheClient()
+	logCacheClient := lcClient.NewClient("", nil)
+	watcher := NewWatcher(service, s.prometheusRegisterer, *logCacheClient, s.watcherInterval)
 
 	s.watchers[service.Guid] = watcher
 	s.serviceMetadataByGUID[service.Guid] = newServiceMetadata(service)

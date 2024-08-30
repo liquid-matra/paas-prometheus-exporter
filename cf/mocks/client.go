@@ -4,8 +4,8 @@ package mocks
 import (
 	"sync"
 
-	"github.com/alphagov/paas-prometheus-exporter/cf"
-	"github.com/cloudfoundry-community/go-cfclient"
+	"github.com/cloudfoundry-community/go-cfclient/v2"
+	"github.com/liquid-matra/paas-prometheus-exporter/cf"
 )
 
 type FakeClient struct {
