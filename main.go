@@ -41,14 +41,14 @@ func loadEnvironmentVariables() {
 	flag.StringVar(&apiEndpoint, "api-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "API endpoint")
 	flag.StringVar(&logCacheEndpoint, "logcache-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "LogCache endpoint")
 	flag.StringVar(&username, "username", LookupEnvOrString("USERNAME", ""), "Cloud Foundry username")
-	flag.StringVar(&username, "password", LookupEnvOrString("PASSWORD", ""), "Cloud Foundry password")
-	flag.StringVar(&username, "client-id", LookupEnvOrString("CLIENT_ID", ""), "uaa Client ID")
-	flag.StringVar(&username, "client-secret", LookupEnvOrString("CLIENT_SECRET", ""), "uaa Client ID")
+	flag.StringVar(&password, "password", LookupEnvOrString("PASSWORD", ""), "Cloud Foundry password")
+	flag.StringVar(&clientID, "client-id", LookupEnvOrString("CLIENT_ID", ""), "uaa Client ID")
+	flag.StringVar(&clientSecret, "client-secret", LookupEnvOrString("CLIENT_SECRET", ""), "uaa Client ID")
 	flag.Int64Var(&updateFrequency, "update-frequency", 300, "The time in seconds, that takes between each apps update call")
 	flag.Int64Var(&scrapeInterval, "scrape-interval", 60, "The time in seconds, that takes between Prometheus scrapes")
 	flag.IntVar(&prometheusBindPort, "prometheus-bind-port", 60, "tThe port to bind to for prometheus metrics")
-	flag.StringVar(&username, "auth-username", LookupEnvOrString("AUTH_USERNAME", ""), "HTTP basic auth username; leave blank to disable basic auth")
-	flag.StringVar(&username, "auth-password", LookupEnvOrString("AUTH_PASSWORD", ""), "HTTP basic auth password")
+	flag.StringVar(&authUsername, "auth-username", LookupEnvOrString("AUTH_USERNAME", ""), "HTTP basic auth username; leave blank to disable basic auth")
+	flag.StringVar(&authPassword, "auth-password", LookupEnvOrString("AUTH_PASSWORD", ""), "HTTP basic auth password")
 }
 
 type ServiceDiscovery interface {
@@ -70,14 +70,43 @@ func main() {
 
 	loadEnvironmentVariables()
 	flag.Parse()
-	CheckConfig()
+
+	var missingVariable []string
+	if username == "" {
+		missingVariable = append(missingVariable, "USERNAME")
+	}
+	if password == "" {
+		missingVariable = append(missingVariable, "PASSWORD")
+	}
+	if apiEndpoint == "" {
+		missingVariable = append(missingVariable, "API_ENDPOINT")
+	}
+
+	if logCacheEndpoint == "" {
+		logCacheEndpoint = strings.Replace(apiEndpoint, "api.", "log-cache.", 1)
+	}
+
+	if updateFrequency < 60 {
+		log.Fatal("The update frequency can not be less than 1 minute")
+		os.Exit(1)
+	}
+
+	if scrapeInterval < 60 {
+		log.Fatal("The scrape interval can not be less than 1 minute")
+		os.Exit(1)
+	}
+
+	if len(missingVariable) > 0 {
+		log.Fatal("Missing mandatory environment variables:", missingVariable)
+		os.Exit(1)
+	}
 
 	buildInfo := prometheus.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "paas_exporter_build_info",
 			Help: "PaaS Prometheus exporter build info.",
 			ConstLabels: prometheus.Labels{
-				"version": version,
+				"Version": Version,
 			},
 		},
 	)
@@ -97,7 +126,7 @@ func main() {
 	// identify individual exporters in our logs
 	userAgent := fmt.Sprintf(
 		"paas-prometheus-exporter/%s (app=%s, index=%d, name=%s)",
-		version,
+		Version,
 		appId,
 		appIndex,
 		appName,
@@ -190,39 +219,4 @@ func LookupEnvOrString(key string, defaultVal string) string {
 		return val
 	}
 	return defaultVal
-}
-
-func CheckConfig() {
-	var missingVariable []string
-	if username == "" {
-		missingVariable = append(missingVariable, "USERNAME")
-	}
-	if password == "" {
-		missingVariable = append(missingVariable, "PASSWORD")
-	}
-	if clientID == "" {
-		missingVariable = append(missingVariable, "CLIENT_ID")
-	}
-	if clientSecret == "" {
-		missingVariable = append(missingVariable, "CLIENT_SECRET")
-	}
-
-	if logCacheEndpoint == "" {
-		logCacheEndpoint = strings.Replace(apiEndpoint, "api.", "log-cache.", 1)
-	}
-
-	if updateFrequency < 60 {
-		log.Fatal("The update frequency can not be less than 1 minute")
-		os.Exit(1)
-	}
-
-	if scrapeInterval < 60 {
-		log.Fatal("The scrape interval can not be less than 1 minute")
-		os.Exit(1)
-	}
-
-	if len(missingVariable) > 0 {
-		log.Fatal("Missing mandatory environment variables:", missingVariable)
-		os.Exit(1)
-	}
 }

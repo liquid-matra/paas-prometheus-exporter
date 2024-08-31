@@ -8,19 +8,19 @@ The application will get metrics for all apps and services that the user has acc
 
 1. Create a new technical user on the AppCloud via the UI. (Or use your existing user if you wish)
 2. Assign the roles of `OrgAuditor` and `SpaceAuditor` to this user for any orgs and/or spaces you want to collect and expose app metrics of.
-```
-$ cf set-org-role my-username my-org OrgAuditor
-Assigning role OrgAuditor to user my-username  in org my-org as admin...
-OK
-
-$ cf set-space-role my-username my-org my-space-1 SpaceAuditor
-Assigning role RoleSpaceAuditor to user my-username in org my-org / space my-space-1 as admin...
-OK
-
-$ cf set-space-role my-username my-org my-space-2 SpaceAuditor
-Assigning role RoleSpaceAuditor to user my-username in org my-org / space my-space-2 as admin...
-OK
-```
+    ```
+    $ cf set-org-role my-username my-org OrgAuditor
+    Assigning role OrgAuditor to user my-username  in org my-org as admin...
+    OK
+    
+    $ cf set-space-role my-username my-org my-space-1 SpaceAuditor
+    Assigning role RoleSpaceAuditor to user my-username in org my-org / space my-space-1 as admin...
+    OK
+    
+    $ cf set-space-role my-username my-org my-space-2 SpaceAuditor
+    Assigning role RoleSpaceAuditor to user my-username in org my-org / space my-space-2 as admin...
+    OK
+    ```
 3. Adjust the provided `manifest.yml` and then push the exporter app, providing the necessary credentials. (`cf push --var cf_username=my-username --var cf_password=my-password --var metrics_username=metrics-auth-username --var metrics_password=metrics-auth-password`)
 
 4. `curl https://my-metrics-exporter-app.applicationcloud.io/metrics`
@@ -51,16 +51,16 @@ For every service instance we poll all metrics for the last 15 minutes from Log 
 
 The following metrics will be exported for every application instance.
 
-|Name|Type|Description|
-|:---|:---|:---|
-|`cpu`|gauge|CPU utilisation in percent (0-100)|
-|`disk_bytes`|gauge|Disk usage in bytes|
-|`disk_utilization`|gauge|Disk utilisation in percent (0-100)|
-|`memory_bytes`|gauge|Memory usage in bytes|
-|`memory_utilization`|gauge|Memory utilisation in percent (0-100)|
-|`crash`|counter|Increased by one if the application crashed for any reason|
-|`requests`|counter|Number of requests processed broken down by `status_range` label|
-|`response_time`|histogram|Timing of processed requests broken down by `status_range` label|
+| Name                 | Type      | Description                                                      |
+|:---------------------|:----------|:-----------------------------------------------------------------|
+| `cpu`                | gauge     | CPU utilisation in percent (0-100)                               |
+| `disk_bytes`         | gauge     | Disk usage in bytes                                              |
+| `disk_utilization`   | gauge     | Disk utilisation in percent (0-100)                              |
+| `memory_bytes`       | gauge     | Memory usage in bytes                                            |
+| `memory_utilization` | gauge     | Memory utilisation in percent (0-100)                            |
+| `crash`              | counter   | Increased by one if the application crashed for any reason       |
+| `requests`           | counter   | Number of requests processed broken down by `status_range` label |
+| `response_time`      | histogram | Timing of processed requests broken down by `status_range` label |
 
 ## Available service metrics
 
@@ -72,22 +72,22 @@ Refer to the [PaaS Technical Documentation](https://docs.cloud.service.gov.uk/mo
 
 ### Mandatory options
 
-|Configuration Option|Application Flag|Environment Variable|Notes|
-|:---|:---|:---|:---|
-|API endpoint|api-endpoint|API_ENDPOINT||
-|Username|username|USERNAME||
-|Password|password|PASSWORD||
+| Configuration Option | Application Flag | Environment Variable | Notes |
+|:---------------------|:-----------------|:---------------------|:------|
+| API endpoint         | api-endpoint     | API_ENDPOINT         |       |
+| Username             | username         | USERNAME             |       |
+| Password             | password         | PASSWORD             |       |
 
 ### Additional options
 
-|Configuration Option|Application Flag|Environment Variable|Default value|Notes|
-|:---|:---|:---|:---|:---|
-|Bind port|prometheus-bind-port|PORT|8080|The port that the application will bind to.|
-|Update frequency|update-frequency|UPDATE_FREQUENCY|300|The time in seconds, that takes between each apps update call|
-|Scrape interval|scrape-interval|SCRAPE_INTERVAL|60|Scrape interval in seconds. Set this to the same value as the Prometheus scrape interval. The service metrics will be refreshed using the same interval|
-|Log-cache endpoint|logcache-endpoint|LOGCACHE_ENDPOINT|`https://log-cache.<PaaS system domain>`|Usually it's unnecessary to override this|
-|Basic-auth username|auth-username|AUTH_USERNAME|Apply basic auth protection to the /metrics endpoint|Leave this field blank to disable basic auth
-|Basic-auth password|auth-password|AUTH_PASSWORD||
+| Configuration Option | Application Flag     | Environment Variable | Default value                                        | Notes                                                                                                                                                   |
+|:---------------------|:---------------------|:---------------------|:-----------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Bind port            | prometheus-bind-port | PORT                 | 8080                                                 | The port that the application will bind to.                                                                                                             |
+| Update frequency     | update-frequency     | UPDATE_FREQUENCY     | 300                                                  | The time in seconds, that takes between each apps update call                                                                                           |
+| Scrape interval      | scrape-interval      | SCRAPE_INTERVAL      | 60                                                   | Scrape interval in seconds. Set this to the same value as the Prometheus scrape interval. The service metrics will be refreshed using the same interval |
+| Log-cache endpoint   | logcache-endpoint    | LOGCACHE_ENDPOINT    | `https://log-cache.<PaaS system domain>`             | Usually it's unnecessary to override this                                                                                                               |
+| Basic-auth username  | auth-username        | AUTH_USERNAME        | Apply basic auth protection to the /metrics endpoint | Leave this field blank to disable basic auth                                                                                                            |
+| Basic-auth password  | auth-password        | AUTH_PASSWORD        |                                                      |                                                                                                                                                         |
 
 ## Development
 
