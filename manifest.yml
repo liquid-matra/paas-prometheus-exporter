@@ -17,7 +17,7 @@ applications:
   - go_buildpack
 
   env:
-    TZ: Europe/Zurich
+    TZ: Europe/Berlin
     GOPACKAGENAME: github.com/liquid-matra/paas-prometheus-exporter
     API_ENDPOINT: https://api.lyra-836.appcloud.swisscom.com
     USERNAME: ((cf_username))
