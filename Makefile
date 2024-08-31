@@ -12,8 +12,8 @@ unit: ## Run unit tests
 	go test -v ./...
 
 .PHONY: build
-unit: ## Run unit tests
-	-ldflags="-X 'main.Version=v1.0.0'"
+build: ## build the binary
+	go build -ldflags="-X 'main.Version=v1.0.0'"
 
 .PHONY: generate
 generate: ## Generate the test mocks

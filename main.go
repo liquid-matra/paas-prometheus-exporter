@@ -24,6 +24,7 @@ import (
 )
 
 var (
+	Version            string
 	apiEndpoint        string
 	logCacheEndpoint   string
 	username           string
@@ -38,15 +39,16 @@ var (
 )
 
 func loadEnvironmentVariables() {
+	flag.StringVar(&Version, "version", "0.0.0", "API endpoint")
 	flag.StringVar(&apiEndpoint, "api-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "API endpoint")
 	flag.StringVar(&logCacheEndpoint, "logcache-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "LogCache endpoint")
 	flag.StringVar(&username, "username", LookupEnvOrString("USERNAME", ""), "Cloud Foundry username")
 	flag.StringVar(&password, "password", LookupEnvOrString("PASSWORD", ""), "Cloud Foundry password")
 	flag.StringVar(&clientID, "client-id", LookupEnvOrString("CLIENT_ID", ""), "uaa Client ID")
-	flag.StringVar(&clientSecret, "client-secret", LookupEnvOrString("CLIENT_SECRET", ""), "uaa Client ID")
+	flag.StringVar(&clientSecret, "client-secret", LookupEnvOrString("CLIENT_SECRET", ""), "uaa Client Secret")
 	flag.Int64Var(&updateFrequency, "update-frequency", 300, "The time in seconds, that takes between each apps update call")
 	flag.Int64Var(&scrapeInterval, "scrape-interval", 60, "The time in seconds, that takes between Prometheus scrapes")
-	flag.IntVar(&prometheusBindPort, "prometheus-bind-port", 60, "tThe port to bind to for prometheus metrics")
+	flag.IntVar(&prometheusBindPort, "prometheus-bind-port", 60, "The port to bind to for prometheus metrics")
 	flag.StringVar(&authUsername, "auth-username", LookupEnvOrString("AUTH_USERNAME", ""), "HTTP basic auth username; leave blank to disable basic auth")
 	flag.StringVar(&authPassword, "auth-password", LookupEnvOrString("AUTH_PASSWORD", ""), "HTTP basic auth password")
 }
