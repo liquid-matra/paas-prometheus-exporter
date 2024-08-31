@@ -39,7 +39,7 @@ var (
 )
 
 func loadEnvironmentVariables() {
-	flag.StringVar(&Version, "version", "0.0.0", "API endpoint")
+	flag.BoolFunc("version", "prints version and quits", printVersion)
 	flag.StringVar(&apiEndpoint, "api-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "API endpoint")
 	flag.StringVar(&logCacheEndpoint, "logcache-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "LogCache endpoint")
 	flag.StringVar(&username, "username", LookupEnvOrString("USERNAME", ""), "Cloud Foundry username")
@@ -51,6 +51,12 @@ func loadEnvironmentVariables() {
 	flag.IntVar(&prometheusBindPort, "prometheus-bind-port", 60, "The port to bind to for prometheus metrics")
 	flag.StringVar(&authUsername, "auth-username", LookupEnvOrString("AUTH_USERNAME", ""), "HTTP basic auth username; leave blank to disable basic auth")
 	flag.StringVar(&authPassword, "auth-password", LookupEnvOrString("AUTH_PASSWORD", ""), "HTTP basic auth password")
+}
+
+func printVersion(s string) error {
+	fmt.Println(Version)
+	os.Exit(0)
+	return nil
 }
 
 type ServiceDiscovery interface {
