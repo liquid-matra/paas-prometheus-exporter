@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -46,9 +47,9 @@ func loadEnvironmentVariables() {
 	flag.StringVar(&password, "password", LookupEnvOrString("PASSWORD", ""), "Cloud Foundry password")
 	flag.StringVar(&clientID, "client-id", LookupEnvOrString("CLIENT_ID", ""), "uaa Client ID")
 	flag.StringVar(&clientSecret, "client-secret", LookupEnvOrString("CLIENT_SECRET", ""), "uaa Client Secret")
-	flag.Int64Var(&updateFrequency, "update-frequency", 300, "The time in seconds, that takes between each apps update call")
-	flag.Int64Var(&scrapeInterval, "scrape-interval", 60, "The time in seconds, that takes between Prometheus scrapes")
-	flag.IntVar(&prometheusBindPort, "prometheus-bind-port", 60, "The port to bind to for prometheus metrics")
+	flag.Int64Var(&updateFrequency, "update-frequency", strconv.Atoi(LookupEnvOrString("UPDATE_FREQUENCY", "300")), "The time in seconds, that takes between each apps update call")
+	flag.Int64Var(&scrapeInterval, "scrape-interval", strconv.Atoi(LookupEnvOrString("SCRAPE_INTERVAL", "60")), "The time in seconds, that takes between Prometheus scrapes")
+	flag.IntVar(&prometheusBindPort, "prometheus-bind-port", strconv.Atoi(LookupEnvOrString("PROMETHEUS_BIND_PORT", "60000")), "The port to bind to for prometheus metrics")
 	flag.StringVar(&authUsername, "auth-username", LookupEnvOrString("AUTH_USERNAME", ""), "HTTP basic auth username; leave blank to disable basic auth")
 	flag.StringVar(&authPassword, "auth-password", LookupEnvOrString("AUTH_PASSWORD", ""), "HTTP basic auth password")
 }
@@ -175,6 +176,7 @@ func main() {
 	server := buildHTTPServer(prometheusBindPort, promhttp.Handler(), authUsername, authPassword)
 
 	go func() {
+		server.Addr = "0.0.0.0:8080"
 		err := server.ListenAndServe()
 		if err != nil {
 			errChan <- err

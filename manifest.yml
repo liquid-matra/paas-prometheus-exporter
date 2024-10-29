@@ -1,6 +1,4 @@
 ---
-# See manifest.yml documentation available at:
-# https://docs.developer.swisscom.com/devguide/deploy-apps/manifest.html
 
 applications:
 - name: prometheus-exporter
@@ -10,17 +8,16 @@ applications:
   health-check-type: port
 
   routes:
-  - route: prometheus-metrics.scapp.io
-  - route: prometheus-metrics.applicationcloud.io
+  - route: prometheus.sys.cfy04.ipz001.internal.bosch.cloud
 
   buildpacks:
-  - go_buildpack
+  - go_buildpack_latest
 
   env:
     TZ: Europe/Berlin
     GOPACKAGENAME: github.com/liquid-matra/paas-prometheus-exporter
-    API_ENDPOINT: https://api.lyra-836.appcloud.swisscom.com
+    API_ENDPOINT: https://api.sys.cfy04.ipz001.internal.bosch.cloud
     USERNAME: ((cf_username))
     PASSWORD: ((cf_password))
-    AUTH_USERNAME: ((metrics_username))
-    AUTH_PASSWORD: ((metrics_password))
+      #    AUTH_USERNAME: ((metrics_username))
+      #    AUTH_PASSWORD: ((metrics_password))
