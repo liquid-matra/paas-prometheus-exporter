@@ -18,14 +18,12 @@ require (
 )
 
 require (
-	code.cloudfoundry.org/go-diodes v0.0.0-20180905200951-72629b5276e3 // indirect
-	code.cloudfoundry.org/tlsconfig v0.18.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/elazarl/goproxy v0.0.0-20240726154733-8b0c20506380 // indirect
-	github.com/elazarl/goproxy/ext v0.0.0-20240726154733-8b0c20506380 // indirect
+	github.com/elazarl/goproxy v1.7.2 // indirect
+	github.com/elazarl/goproxy/ext v0.0.0-20250305112401-088f758167d2 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect

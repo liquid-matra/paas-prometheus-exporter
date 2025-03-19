@@ -1,5 +1,4 @@
 ---
-
 applications:
 - name: prometheus-exporter
   memory: 128M
