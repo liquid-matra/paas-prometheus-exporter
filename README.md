@@ -6,7 +6,26 @@ The application will get metrics for all apps and services that the user has acc
 
 ## Usage on Bosch Private Cloud
 
-1. Create a new technical user on the BPC via the UI. (Or use your existing user if you wish)
+1. Create a new technical user on the BPC according to the [documentation](https://docs.apps.bosch.cloud/cloud-foundry/features/technical_users/). (Or use your existing user if you wish)
+   ```
+   # first find the name of your Cloud Foundry service instance
+   # (service name is: cf-service-broker-proxy)
+   $ cf services
+   
+   # create a service key, which is a username/password combination.
+   $ cf create-service-key <SERVICE_INSTANCE> <SERVICE_KEY>
+   
+   # retrieve the user credentials
+   $ cf service-key <SERVICE_INSTANCE> <SERVICE_KEY>
+   Getting key <SERVICE_KEY> for service instance <SERVICE_INSTANCE> as <NTID>...
+
+   {
+   "credentials": {
+   "password": "wl96Nd+8dz+OBJZknpuo-D1DjhTN_9F7KCIFBPp",
+   "username": "tu-bd7a9079-e9ba-43da-9a34-0681b013e9bd"
+   }
+   }
+   ```
 2. Assign the roles of `OrgAuditor` and `SpaceAuditor` to this user for any orgs and/or spaces you want to collect and expose app metrics of.
     ```
     $ cf set-org-role my-username my-org OrgAuditor
@@ -21,9 +40,14 @@ The application will get metrics for all apps and services that the user has acc
     Assigning role RoleSpaceAuditor to user my-username in org my-org / space my-space-2 as admin...
     OK
     ```
-3. Adjust the provided `manifest.yml` and then push the exporter app, providing the necessary credentials. (`cf push --var cf_username=my-username --var cf_password=my-password --var metrics_username=metrics-auth-username --var metrics_password=metrics-auth-password`)
+3. Adjust the provided `manifest.yml` and then push the exporter app, providing the necessary credentials. 
+   ```
+   cf push --var cf_username=my-username --var cf_password=my-password --var metrics_username=metrics-auth-username --var metrics_password=metrics-auth-password
+   ```
 
-4. `curl https://my-metrics-exporter-app.applicationcloud.io/metrics`
+4. `curl https://prometheus1.apps.cfy05.ipz001.internal.bosch.cloud/metrics`
+
+The exporter can now be scraped by a Prometheus instance. 
 
 ## Usage on Swisscom AppCloud
 
@@ -134,4 +158,7 @@ make generate
 
 ## Acknowledgements
 
-The application is partly based on [`pivotal-cf/graphite-nozzle`](https://github.com/pivotal-cf/graphite-nozzle).
+The application is partly based on 
+- [`pivotal-cf/graphite-nozzle`](https://github.com/pivotal-cf/graphite-nozzle)
+- [`paas-prometheus-exporter`](https://github.com/alphagov/paas-prometheus-exporter)
+- [`paas-prometheus-exporter`](https://github.com/swisscom/paas-prometheus-exporter)
