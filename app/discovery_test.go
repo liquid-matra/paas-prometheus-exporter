@@ -5,13 +5,13 @@ import (
 	"errors"
 	"time"
 
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/test"
 	sonde_events "github.com/cloudfoundry/sonde-go/events"
-	"github.com/liquid-matra/paas-prometheus-exporter/test"
 
 	dto "github.com/prometheus/client_model/go"
 
-	"github.com/liquid-matra/paas-prometheus-exporter/app"
-	"github.com/liquid-matra/paas-prometheus-exporter/cf/mocks"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/app"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf/mocks"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/prometheus/client_golang/prometheus"

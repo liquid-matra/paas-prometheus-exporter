@@ -1,7 +1,7 @@
 package util_test
 
 import (
-	"github.com/liquid-matra/paas-prometheus-exporter/util"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/util"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/ginkgo/v2/extensions/table"
 	. "github.com/onsi/gomega"

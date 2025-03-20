@@ -4,7 +4,7 @@ package mocks
 import (
 	"sync"
 
-	"github.com/liquid-matra/paas-prometheus-exporter/test"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/test"
 	"github.com/prometheus/client_golang/prometheus"
 )
 

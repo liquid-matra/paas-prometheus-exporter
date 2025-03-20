@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/liquid-matra/paas-prometheus-exporter/app"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/app"
 
-	"github.com/liquid-matra/paas-prometheus-exporter/cf/mocks"
-	testmocks "github.com/liquid-matra/paas-prometheus-exporter/test/mocks"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf/mocks"
+	testmocks "github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/test/mocks"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/ginkgo/v2/extensions/table"
 	. "github.com/onsi/gomega"

@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
 
-	"github.com/liquid-matra/paas-prometheus-exporter/util"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/util"
 )
 
 var _ = Describe("Basic auth handler", func() {

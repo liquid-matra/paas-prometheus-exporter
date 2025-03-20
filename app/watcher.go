@@ -8,9 +8,9 @@ import (
 	"log"
 	"time"
 
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf"
 	cfclient "github.com/cloudfoundry-community/go-cfclient/v2"
 	sonde_events "github.com/cloudfoundry/sonde-go/events"
-	"github.com/liquid-matra/paas-prometheus-exporter/cf"
 	"github.com/prometheus/client_golang/prometheus"
 )
 

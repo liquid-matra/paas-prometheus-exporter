@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/liquid-matra/paas-prometheus-exporter/cf"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf"
 	"github.com/prometheus/client_golang/prometheus"
 
 	lcClient "code.cloudfoundry.org/go-log-cache/v3"

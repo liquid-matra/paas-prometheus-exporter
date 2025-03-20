@@ -8,7 +8,7 @@ import (
 
 	client "code.cloudfoundry.org/go-log-cache/v3"
 	"code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2"
-	"github.com/liquid-matra/paas-prometheus-exporter/cf"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf"
 )
 
 type FakeLogCacheClient struct {

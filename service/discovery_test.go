@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"code.cloudfoundry.org/go-loggregator/v10/rpc/loggregator_v2"
-	"github.com/liquid-matra/paas-prometheus-exporter/cf"
-	"github.com/liquid-matra/paas-prometheus-exporter/test"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/test"
 
+	cfmocks "github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf/mocks"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/service"
 	cfclient "github.com/cloudfoundry-community/go-cfclient/v2"
-	cfmocks "github.com/liquid-matra/paas-prometheus-exporter/cf/mocks"
-	"github.com/liquid-matra/paas-prometheus-exporter/service"
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
 

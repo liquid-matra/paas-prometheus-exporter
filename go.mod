@@ -1,4 +1,4 @@
-module github.com/liquid-matra/paas-prometheus-exporter
+module github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter
 
 go 1.24
 
@@ -10,7 +10,7 @@ require (
 	github.com/cloudfoundry/noaa/v2 v2.5.0
 	github.com/cloudfoundry/sonde-go v0.0.0-20250317104451-a50013ad58bc
 	github.com/jarcoal/httpmock v1.3.1
-	github.com/onsi/ginkgo/v2 v2.23.0
+	github.com/onsi/ginkgo/v2 v2.23.1
 	github.com/onsi/gomega v1.36.2
 	github.com/prometheus/client_golang v1.21.1
 	github.com/prometheus/client_model v0.6.1

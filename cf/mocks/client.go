@@ -5,8 +5,8 @@ import (
 	"sync"
 
 	client "code.cloudfoundry.org/go-log-cache/v3"
-	cfclient "github.com/cloudfoundry-community/go-cfclient/v2"
-	"github.com/liquid-matra/paas-prometheus-exporter/cf"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf"
+	
 )
 
 type FakeClient struct {
