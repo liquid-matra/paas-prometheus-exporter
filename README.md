@@ -27,19 +27,19 @@ The application will get metrics for all apps and services that the user has acc
    }
    ```
 2. Assign the roles of `OrgAuditor` and `SpaceAuditor` to this user for any orgs and/or spaces you want to collect and expose app metrics of.
-    ```
-    $ cf set-org-role my-username my-org OrgAuditor
-    Assigning role OrgAuditor to user my-username  in org my-org as admin...
-    OK
-    
-    $ cf set-space-role my-username my-org my-space-1 SpaceAuditor
-    Assigning role RoleSpaceAuditor to user my-username in org my-org / space my-space-1 as admin...
-    OK
-    
-    $ cf set-space-role my-username my-org my-space-2 SpaceAuditor
+   ```
+   $ cf set-org-role my-username my-org OrgAuditor
+   Assigning role OrgAuditor to user my-username  in org my-org as admin...
+   OK
+   
+   $ cf set-space-role my-username my-org my-space-1 SpaceAuditor
+   Assigning role RoleSpaceAuditor to user my-username in org my-org / space my-space-1 as admin...
+   OK
+   
+   $ cf set-space-role my-username my-org my-space-2 SpaceAuditor
     Assigning role RoleSpaceAuditor to user my-username in org my-org / space my-space-2 as admin...
-    OK
-    ```
+   OK
+   ```
 3. Adjust the provided `manifest.yml` and then push the exporter app, providing the necessary credentials. 
    ```
    cf push --var cf_username=my-username --var cf_password=my-password --var metrics_username=metrics-auth-username --var metrics_password=metrics-auth-password
