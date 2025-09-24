@@ -13,8 +13,7 @@ applications:
   env:
     TZ: Europe/Berlin
     GOPACKAGENAME: github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter
-    API_ENDPOINT: https://api.sys.cfy04.ipz001.internal.bosch.cloud
     USERNAME: ((cf_username))
     PASSWORD: ((cf_password))
-      #    AUTH_USERNAME: ((metrics_username))
-      #    AUTH_PASSWORD: ((metrics_password))
+    # AUTH_USERNAME: ((metrics_username))
+    # AUTH_PASSWORD: ((metrics_password))

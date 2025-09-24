@@ -2,12 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
-	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/app"
-	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf"
-	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/service"
-	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/util"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +13,11 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/app"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/service"
+	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/util"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
@@ -39,9 +41,42 @@ var (
 	authPassword       string
 )
 
+func setCfEndpointFromVCAP() {
+	type VCAPVariables struct {
+		CfAPI  string `json:"cf_api"`
+		Limits struct {
+			Fds  int `json:"fds,omitempty"`
+			Mem  int `json:"mem,omitempty"`
+			Disk int `json:"disk,omitempty"`
+		} `json:"limits,omitempty"`
+		ApplicationName    string   `json:"application_name,omitempty"`
+		ApplicationUris    []string `json:"application_uris,omitempty"`
+		Name               string   `json:"name,omitempty"`
+		SpaceName          string   `json:"space_name,omitempty"`
+		SpaceID            string   `json:"space_id,omitempty"`
+		OrganizationID     string   `json:"organization_id,omitempty"`
+		OrganizationName   string   `json:"organization_name,omitempty"`
+		Uris               []string `json:"uris,omitempty"`
+		ProcessID          string   `json:"process_id,omitempty"`
+		ProcessType        string   `json:"process_type,omitempty"`
+		ApplicationID      string   `json:"application_id,omitempty"`
+		Version            string   `json:"version,omitempty"`
+		ApplicationVersion string   `json:"application_version,omitempty"`
+	}
+
+	var vcap VCAPVariables
+	envVar := os.Getenv("VCAP_APPLICATION")
+	err := json.Unmarshal([]byte(envVar), &vcap)
+	if err == nil {
+		log.Println("Using CF_ENDPOINT from VCAP_APPLICATION:", vcap.CfAPI)
+		_ = os.Setenv("API_ENDPOINT", vcap.CfAPI)
+	}
+}
+
 func loadEnvironmentVariables() {
+	setCfEndpointFromVCAP()
 	flag.BoolFunc("version", "prints version and quits", printVersion)
-	flag.StringVar(&apiEndpoint, "api-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "API endpoint")
+	flag.StringVar(&apiEndpoint, "api-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "API endpoint (Default: Extract from VCAP_APPLICATION)")
 	flag.StringVar(&logCacheEndpoint, "logcache-endpoint", LookupEnvOrString("API_ENDPOINT", ""), "LogCache endpoint")
 	flag.StringVar(&username, "username", LookupEnvOrString("USERNAME", ""), "Cloud Foundry username")
 	flag.StringVar(&password, "password", LookupEnvOrString("PASSWORD", ""), "Cloud Foundry password")
