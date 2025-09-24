@@ -5,9 +5,7 @@ applications:
   disk_quota: 128M
   instances: 1
   health-check-type: port
-
-  routes:
-  - route: prometheus.sys.cfy04.ipz001.internal.bosch.cloud
+  random-route: true
 
   buildpacks:
   - go_buildpack_latest
