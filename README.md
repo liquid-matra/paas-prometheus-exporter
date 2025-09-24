@@ -1,8 +1,5 @@
 # paas-prometheus-exporter
 
-![](https://img.shields.io/badge/Version-0.4.0-green)
-![](https://img.shields.io/badge/Go-1.24%2B-blue)
-
 This application consumes application and service metrics from Cloud Foundry. All the metrics are exposed on a  `/metrics` endpoint for a Prometheus server to scrape.
 
 The application will get metrics for all apps and services that the user has access to.
