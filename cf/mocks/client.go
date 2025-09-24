@@ -6,7 +6,7 @@ import (
 
 	client "code.cloudfoundry.org/go-log-cache/v3"
 	"github.boschdevcloud.com/BHC-Demo/paas-prometheus-exporter/cf"
-	
+	"github.com/cloudfoundry-community/go-cfclient/v2"
 )
 
 type FakeClient struct {
