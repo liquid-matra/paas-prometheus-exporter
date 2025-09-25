@@ -9,7 +9,7 @@ The application will get metrics for all apps and services that the user has acc
 1. Create a new technical user on the BPC according to the [documentation](https://docs.apps.bosch.cloud/cloud-foundry/features/technical_users/). (Or use your existing user if you wish)
    ```
    # first find the name of your Cloud Foundry service instance
-   # (service name is: cf-service-broker-proxy)
+   # (service offering is: cloudfoundry-paas)
    $ cf services
    
    # create a service key, which is a username/password combination.
@@ -26,6 +26,10 @@ The application will get metrics for all apps and services that the user has acc
    }
    }
    ```
+
+> :warning:
+> The technical users password expires every 90 days.
+
 2. Assign the roles of `OrgAuditor` and `SpaceAuditor` to this user for any orgs and/or spaces you want to collect and expose app metrics of.
    ```
    $ cf set-org-role my-username my-org OrgAuditor
